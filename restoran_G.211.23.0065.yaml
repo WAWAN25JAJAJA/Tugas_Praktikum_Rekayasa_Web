@@ -1,0 +1,335 @@
+openapi: "3.0.2"
+info:
+  title: API Restoran & Kafe
+  description: API untuk mengelola data menu, pelanggan, dan pesanan pada sistem restoran atau kafe.
+  version: "1.0.0"
+  contact:
+    name: Admin Restoku
+    email: admin@restoku.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+
+servers:
+  - url: https://api.restoku.com/v1
+    description: Production server
+  - url: https://api-staging.restoku.com/v1
+    description: Staging server
+
+tags:
+  - name: Menu
+    description: Operasi untuk mengelola daftar menu makanan dan minuman
+  - name: Pelanggan
+    description: Operasi untuk mengelola data pelanggan
+  - name: Pesanan
+    description: Operasi untuk mencatat dan mengelola pesanan pelanggan
+
+paths:
+  /menu:
+    get:
+      tags:
+        - Menu
+      summary: Mendapatkan semua menu
+      description: Mengambil daftar seluruh menu yang tersedia di restoran
+      responses:
+        '200':
+          description: Daftar menu berhasil diambil
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Menu'
+    post:
+      tags:
+        - Menu
+      summary: Menambahkan menu baru
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MenuInput'
+      responses:
+        '201':
+          description: Menu berhasil ditambahkan
+
+  /menu/{id}:
+    get:
+      tags:
+        - Menu
+      summary: Mendapatkan detail menu berdasarkan ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: ID menu
+      responses:
+        '200':
+          description: Detail menu berhasil diambil
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Menu'
+        '404':
+          description: Menu tidak ditemukan
+    put:
+      tags:
+        - Menu
+      summary: Memperbarui data menu
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MenuInput'
+      responses:
+        '200':
+          description: Menu berhasil diperbarui
+    delete:
+      tags:
+        - Menu
+      summary: Menghapus menu berdasarkan ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Menu berhasil dihapus
+
+  /pelanggan:
+    get:
+      tags:
+        - Pelanggan
+      summary: Mendapatkan daftar pelanggan
+      responses:
+        '200':
+          description: Daftar pelanggan berhasil diambil
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Pelanggan'
+    post:
+      tags:
+        - Pelanggan
+      summary: Menambahkan pelanggan baru
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PelangganInput'
+      responses:
+        '201':
+          description: Pelanggan berhasil ditambahkan
+
+  /pesanan:
+    get:
+      tags:
+        - Pesanan
+      summary: Mendapatkan daftar semua pesanan
+      responses:
+        '200':
+          description: Daftar pesanan berhasil diambil
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Pesanan'
+    post:
+      tags:
+        - Pesanan
+      summary: Menambahkan pesanan baru
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PesananInput'
+      responses:
+        '201':
+          description: Pesanan berhasil ditambahkan
+
+  /pesanan/{id}:
+    get:
+      tags:
+        - Pesanan
+      summary: Mendapatkan detail pesanan berdasarkan ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: ID pesanan
+      responses:
+        '200':
+          description: Detail pesanan berhasil diambil
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Pesanan'
+        '404':
+          description: Pesanan tidak ditemukan
+    put:
+      tags:
+        - Pesanan
+      summary: Memperbarui status pesanan
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: ID pesanan
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PesananInput'
+      responses:
+        '200':
+          description: Pesanan berhasil diperbarui
+    delete:
+      tags:
+        - Pesanan
+      summary: Menghapus pesanan
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Pesanan berhasil dihapus
+
+components:
+  schemas:
+    Menu:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "MN001"
+        nama:
+          type: string
+          example: "Nasi Goreng Spesial"
+        kategori:
+          type: string
+          example: "Makanan"
+        harga:
+          type: number
+          format: float
+          example: 25000
+        tersedia:
+          type: boolean
+          example: true
+    MenuInput:
+      type: object
+      required:
+        - nama
+        - harga
+      properties:
+        nama:
+          type: string
+          example: "Kopi Susu Gula Aren"
+        kategori:
+          type: string
+          example: "Minuman"
+        harga:
+          type: number
+          format: float
+          example: 19000
+        tersedia:
+          type: boolean
+          example: true
+
+    Pelanggan:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "PL001"
+        nama:
+          type: string
+          example: "Kurniawan"
+        telepon:
+          type: string
+          example: "08123456789"
+        alamat:
+          type: string
+          example: "Jl. Merdeka No. 45"
+    PelangganInput:
+      type: object
+      required:
+        - nama
+      properties:
+        nama:
+          type: string
+          example: "Dika Aprilian Arangga"
+        telepon:
+          type: string
+          example: "0815769145"
+        alamat:
+          type: string
+          example: "Jl. Tlogosari No. 35"
+
+    Pesanan:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "PS001"
+        id_pelanggan:
+          type: string
+          example: "PL001"
+        id_menu:
+          type: string
+          example: "MN001"
+        jumlah:
+          type: integer
+          example: 2
+        total_harga:
+          type: number
+          format: float
+          example: 50000
+        status:
+          type: string
+          enum: [Menunggu, Diproses, Selesai, Dibatalkan]
+          example: "Diproses"
+    PesananInput:
+      type: object
+      required:
+        - id_pelanggan
+        - id_menu
+        - jumlah
+      properties:
+        id_pelanggan:
+          type: string
+          example: "PL011"
+        id_menu:
+          type: string
+          example: "MN011"
+        jumlah:
+          type: integer
+          example: 3
+        status:
+          type: string
+          enum: [Menunggu, Diproses, Selesai, Dibatalkan]
+          example: "Diproses"
